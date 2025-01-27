@@ -24,6 +24,7 @@ class TiktokenTokenizer:
     def decode(self, indices):
         return self.tiktoken_tokenizer.decode(indices)
 
+
 class GPTDatasetV1(Dataset):
     def __init__(self, txt, tokenizer, max_length, stride):
         self.input_ids = []
@@ -31,7 +32,7 @@ class GPTDatasetV1(Dataset):
 
         token_ids = tokenizer.encode(txt)
         if len(token_ids) >= max_length:
-            for i in range(0, len(token_ids) - max_length, stride):
+            for i in range(0, len(token_ids) - max_length + 1, stride):
                 self.input_ids.append(token_ids[i:i + max_length])
                 self.target_ids.append(token_ids[i + stride:i + max_length + stride])
         
@@ -40,6 +41,7 @@ class GPTDatasetV1(Dataset):
 
     def __getitem__(self, idx):
         return torch.tensor(self.input_ids[idx]), torch.tensor(self.target_ids[idx])
+
 
 class DataLoaderFactory:
     def __init__(self, tokenizer_name="gpt2"):
